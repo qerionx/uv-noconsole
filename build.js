@@ -20,6 +20,7 @@ let builder = await build({
 	platform: "browser",
 	sourcemap: true,
 	minify: !isDevelopment,
+	drop: ["console"],
 	entryPoints: {
 		"uv.bundle": "./src/rewrite/index.js",
 		"uv.client": "./src/client/index.js",
