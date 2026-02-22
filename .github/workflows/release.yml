@@ -19,7 +19,7 @@ jobs:
           node-version: '20'
 
       - name: install deps
-        run: npm ci
+        run: npm install
 
       - name: build
         run: npm run build
