@@ -1,0 +1,43 @@
+name: release
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: setup node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: install deps
+        run: npm install
+
+      - name: build
+        run: npm run build
+
+      - name: make tarballl
+        run: npm pack
+
+      - name: stuff
+        id: package
+        run: |
+          echo "name=$(node -p "require('./package.json').name.replace('@', '').replace('/', '-')")" >> $GITHUB_OUTPUT
+          echo "version=$(node -p "require('./package.json').version")" >> $GITHUB_OUTPUT
+
+      - name: Upload tarball to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            *.tgz
+          tag_name: v${{ steps.package.outputs.version }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
